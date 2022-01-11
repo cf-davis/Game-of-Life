@@ -12,20 +12,109 @@ namespace ModelTests
         }
 
         /// <summary>
+        /// Creates a stable pattern of a specified form.  This pattern will not change 
+        /// between generations when left alone.
+        /// 
+        /// Form codes:
+        /// 1 - Block   {(0,0),(1,0),(0,1),(1,1)}
+        /// 2 - BeeHive {(0,1),(1,0),(1,2),(2,0),(2,2),(3,1)}
+        /// 
+        /// Defaults to Block pattern
+        /// </summary>
+        /// <param name="form"></param>
+        /// <returns></returns>
+        private HashSet<Cell> SetupStillLife(int form)
+        {
+            HashSet<Cell> cells = new HashSet<Cell>();
+
+            switch (form)
+            {
+                case 1: default:
+                    cells.Add(new Cell(0, 0));
+                    cells.Add(new Cell(1, 0));
+                    cells.Add(new Cell(0, 1));
+                    cells.Add(new Cell(1, 1));
+                    break;
+                case 2:
+                    // top row
+                    cells.Add(new Cell(1, 2));
+                    cells.Add(new Cell(2, 2));
+
+                    // middle row
+                    cells.Add(new Cell(0, 1));
+                    cells.Add(new Cell(3, 1));
+
+                    // bottom row
+                    cells.Add(new Cell(1, 0));
+                    cells.Add(new Cell(2, 0));
+                    break;
+            }
+
+            return cells;
+        }
+
+        /// <summary>
         /// Creates a "blinker" pattern which, upon the game updating,
         /// should oscillate between {(0,1),(0,0),(0,-1)} and {(1,0),(0,0),(-1,0)}
-        /// each update.  The state of the returned blinker is vertical (the 
-        /// former of the listed sets)
+        /// each update.  The period argumnet cycles which of the above sets are returned
+        /// (1 for the first set, 2 for the second)
         /// </summary>
         /// <returns></returns>
-        private HashSet<Cell> SetupSimpleOscillator()
+        private HashSet<Cell> SetupBlinker(int period)
         {
-            HashSet<Cell> cells = new HashSet<Cell>
+            HashSet<Cell> cells = new HashSet<Cell>();
+
+            if (period % 2 == 1)
             {
-                new Cell(0, 1),
-                new Cell(0, 0),
-                new Cell(0, -1)
-            };
+                cells.Add(new Cell(0, -1));
+                cells.Add(new Cell(0, 0));
+                cells.Add(new Cell(0, 1));
+            }
+            else
+            {
+                cells.Add(new Cell(-1, 0));
+                cells.Add(new Cell(0, 0));
+                cells.Add(new Cell(1, 0));
+            }
+            
+
+            return cells;
+        }
+
+        /// <summary>
+        /// Creates a "toad" pattern oscillator which will oscilate between 
+        /// two six-celled patterns every other generation
+        /// </summary>
+        /// <returns></returns>
+        private HashSet<Cell> SetupToad(int period)
+        {
+            HashSet<Cell> cells = new HashSet<Cell>();
+
+            if (period % 2 == 1)
+            {
+                // top row
+                cells.Add(new Cell(-1, 1));
+                cells.Add(new Cell(0, 1));
+                cells.Add(new Cell(1, 1));
+
+                // bottom row
+                cells.Add(new Cell(0, 0));
+                cells.Add(new Cell(-1, 0));
+                cells.Add(new Cell(-2, 0));
+
+            }
+            else
+            {
+                // right wing
+                cells.Add(new Cell(0, 2));
+                cells.Add(new Cell(1, 1));
+                cells.Add(new Cell(1, 0));
+
+                // left wing
+                cells.Add(new Cell(-2, 1));
+                cells.Add(new Cell(-2, 0));
+                cells.Add(new Cell(-1, -1));
+            }
 
             return cells;
         }
@@ -47,52 +136,58 @@ namespace ModelTests
             Life game = new Life();
 
             Assert.AreEqual(0, game.Cells.Count);
+            Assert.AreEqual(0, game.Generation);
         }
 
         [Test]
         public void CreateNonEmptyGame()
         {
-            HashSet<Cell> verticalOsc = new HashSet<Cell>()
-            {
-                new Cell(0, -1),
-                new Cell(0, 0),
-                new Cell(0, 1)
-            };
+            Life game = new Life(SetupBlinker(1));
 
-            Life game = new Life(SetupSimpleOscillator());
-
-            Assert.IsTrue(verticalOsc.SetEquals(game.Cells));
+            Assert.IsTrue(SetupBlinker(1).SetEquals(game.Cells));
         }
 
         [Test]
-        public void UpdateSimpleOscillator()
+        public void UpdateStablePatterns()
         {
-            HashSet<Cell> verticalOsc = new HashSet<Cell>()
-            {
-                new Cell(0, -1),
-                new Cell(0, 0),
-                new Cell(0, 1)
-            };
-
-            HashSet<Cell> horizontalOsc = new HashSet<Cell>()
-            {
-                new Cell(-1, 0),
-                new Cell(0, 0),
-                new Cell(1, 0)
-            };
-
-            Life game = new Life(SetupSimpleOscillator());
-
-            Assert.AreEqual(3, game.Cells.Count);
+            Life game = new Life(SetupStillLife(1));
 
             game.UpdateCells();
-            Assert.AreEqual(3, game.Cells.Count);
-            Assert.IsTrue(horizontalOsc.SetEquals(game.Cells));
+            Assert.IsTrue(SetupStillLife(1).SetEquals(game.Cells));
+
+            game = new Life(SetupStillLife(2));
 
             game.UpdateCells();
-            Assert.AreEqual(3, game.Cells.Count);
-            Assert.IsTrue(verticalOsc.SetEquals(game.Cells));
+            Assert.IsTrue(SetupStillLife(2).SetEquals(game.Cells));
+        }
 
+        [Test]
+        public void UpdateBlinkerOscillator()
+        {
+            Life game = new Life(SetupBlinker(1));
+
+            game.UpdateCells();
+            Assert.AreEqual(1, game.Generation);
+            Assert.IsTrue(SetupBlinker(2).SetEquals(game.Cells));
+
+            game.UpdateCells();
+            Assert.AreEqual(2, game.Generation);
+            Assert.IsTrue(SetupBlinker(1).SetEquals(game.Cells));
+
+        }
+
+        [Test]
+        public void UpdateToadOscillator()
+        {
+            Life game = new Life(SetupToad(1));
+
+            game.UpdateCells();
+            Assert.AreEqual(1, game.Generation);
+            Assert.IsTrue(SetupToad(2).SetEquals(game.Cells));
+
+            game.UpdateCells();
+            Assert.AreEqual(2, game.Generation);
+            Assert.IsTrue(SetupToad(1).SetEquals(game.Cells));
         }
 
     }

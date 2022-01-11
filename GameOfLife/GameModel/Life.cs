@@ -13,7 +13,7 @@ namespace GameModel
         public HashSet<Cell> Cells { get; private set; }
 
         // the current zero-based iteration of the simulation
-        public int Generation { get; private set; }
+        public uint Generation { get; private set; }
 
         // temporary constructor; should update to take in a provided set of cells 
         public Life() : this(new HashSet<Cell>())
@@ -56,16 +56,17 @@ namespace GameModel
             {
                 HashSet<Cell> deadCells = GetDeadAdjacents(c);
 
-                // check for 2 or 3 live Cells adjavcent to this Cell
+                // check for 2 or 3 live Cells adjacent to this Cell
                 if (deadCells.Count == 5 || deadCells.Count == 6)
                 {
                     nextGeneration.Add(c);
                 }
 
+                // check if any dead Cells revive
                 foreach (Cell deadCell in deadCells)
                 {
                     if (!nextGeneration.Contains(deadCell))
-                        if (GetDeadAdjacents(deadCell).Count == 5)
+                        if (GetDeadAdjacents(deadCell).Count == 5) // revive a dead cell w/ 3 adjacent live cells
                             nextGeneration.Add(deadCell);
                 }
 
@@ -76,7 +77,7 @@ namespace GameModel
         }
 
         /// <summary>
-        /// Retuns the number of "dead" Cells adjacent to the
+        /// Retuns the a list of the "dead" Cells adjacent to the
         /// provided Cell
         /// </summary>
         /// <param name="c"></param>
