@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameModel
 {
+
     public class Life
     {
 
@@ -39,16 +40,6 @@ namespace GameModel
         /// </summary>
         public void UpdateCells()
         {
-
-            /*
-             * loop through live cells:
-             * - check adjacent cells of each cell:
-             *      - add dead cells to a seperate list
-             *      - apply rules based on live cells
-             * - check adjacents of dead cells and apply rules
-             * 
-             * update generation (this.Cells)
-             */
 
             HashSet<Cell> nextGeneration = new HashSet<Cell>();
 
@@ -105,7 +96,7 @@ namespace GameModel
     }
 
     /// <summary>
-    /// Represents a Cell with grid coordinates and an "alive" flag 
+    /// Represents a Cell with position in a grid  
     /// in the Game of Life
     /// </summary>
     public struct Cell
@@ -115,16 +106,10 @@ namespace GameModel
         public long X { get; }
         public long Y { get; }
 
-        //// flags if a Cell will remain alive after a simulation update
-        //public bool alive; 
-
-        // Cell[] adjacent; // adjacent Cells can be found from the position
-
         public Cell(long xPos, long yPos)
         {
             X = xPos;
             Y = yPos;
-            // alive = true;
         }
 
         public override string ToString() => "{" + X + ", " + Y + "}";

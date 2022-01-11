@@ -15,7 +15,7 @@ namespace ModelTests
         /// Creates a stable pattern of a specified form.  This pattern will not change 
         /// between generations when left alone.
         /// 
-        /// Form codes:
+        /// Form codes and default sets:
         /// 1 - Block   {(0,0),(1,0),(0,1),(1,1)}
         /// 2 - BeeHive {(0,1),(1,0),(1,2),(2,0),(2,2),(3,1)}
         /// 
@@ -30,12 +30,15 @@ namespace ModelTests
             switch (form)
             {
                 case 1: default:
+                    // block pattern
                     cells.Add(new Cell(0, 0));
                     cells.Add(new Cell(1, 0));
                     cells.Add(new Cell(0, 1));
                     cells.Add(new Cell(1, 1));
                     break;
                 case 2:
+                    // beehive pattern
+
                     // top row
                     cells.Add(new Cell(1, 2));
                     cells.Add(new Cell(2, 2));
@@ -66,12 +69,14 @@ namespace ModelTests
 
             if (period % 2 == 1)
             {
+                // vertical bar
                 cells.Add(new Cell(0, -1));
                 cells.Add(new Cell(0, 0));
                 cells.Add(new Cell(0, 1));
             }
             else
             {
+                // horizontal bar
                 cells.Add(new Cell(-1, 0));
                 cells.Add(new Cell(0, 0));
                 cells.Add(new Cell(1, 0));
@@ -150,12 +155,12 @@ namespace ModelTests
         [Test]
         public void UpdateStablePatterns()
         {
-            Life game = new Life(SetupStillLife(1));
+            Life game = new Life(SetupStillLife(1)); // test "Block"
 
             game.UpdateCells();
             Assert.IsTrue(SetupStillLife(1).SetEquals(game.Cells));
 
-            game = new Life(SetupStillLife(2));
+            game = new Life(SetupStillLife(2));  // test "BeeHive"
 
             game.UpdateCells();
             Assert.IsTrue(SetupStillLife(2).SetEquals(game.Cells));
@@ -166,13 +171,13 @@ namespace ModelTests
         {
             Life game = new Life(SetupBlinker(1));
 
-            game.UpdateCells();
-            Assert.AreEqual(1, game.Generation);
-            Assert.IsTrue(SetupBlinker(2).SetEquals(game.Cells));
-
-            game.UpdateCells();
-            Assert.AreEqual(2, game.Generation);
-            Assert.IsTrue(SetupBlinker(1).SetEquals(game.Cells));
+            // update the pattern for 10 generations
+            for (int i = 0; i < 10; i++)
+            {
+                Assert.AreEqual(i, game.Generation);
+                game.UpdateCells();
+                Assert.IsTrue(SetupBlinker(i).SetEquals(game.Cells));
+            }
 
         }
 
@@ -181,13 +186,14 @@ namespace ModelTests
         {
             Life game = new Life(SetupToad(1));
 
-            game.UpdateCells();
-            Assert.AreEqual(1, game.Generation);
-            Assert.IsTrue(SetupToad(2).SetEquals(game.Cells));
+            // update the pattern for 10 generations
+            for (int i = 0; i < 10; i++)
+            {
+                Assert.AreEqual(i, game.Generation);
+                game.UpdateCells();
+                Assert.IsTrue(SetupToad(i).SetEquals(game.Cells));
+            }
 
-            game.UpdateCells();
-            Assert.AreEqual(2, game.Generation);
-            Assert.IsTrue(SetupToad(1).SetEquals(game.Cells));
         }
 
     }
