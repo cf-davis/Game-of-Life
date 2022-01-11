@@ -17,3 +17,12 @@ try to implement a representation of Life withiut following any comprehensive tu
   - Customizable colors of "living" and "dead" cells
   - An option to pause the game
   - ...
+
+## In-progress / near future
+  - an option to translate generated patterns in unit tests
+  - stress testing 
+  - start working on graphical representation
+
+## Resources
+
+https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
