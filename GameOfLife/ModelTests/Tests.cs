@@ -31,6 +31,17 @@ namespace ModelTests
         }
 
         [Test]
+        public void CheckCellHash()
+        {
+            Cell a = new Cell(0, 0);
+            Cell b = new Cell(0, 0);
+            Cell c = new Cell(1, 1);
+
+            Assert.AreEqual(a.GetHashCode(), b.GetHashCode());
+            Assert.AreNotEqual(a.GetHashCode(), c.GetHashCode());
+        }
+
+        [Test]
         public void CreateEmptyGame()
         {
             Life game = new Life();
@@ -50,7 +61,7 @@ namespace ModelTests
 
             Life game = new Life(SetupSimpleOscillator());
 
-            Assert.AreEqual(verticalOsc, game.Cells);
+            Assert.IsTrue(verticalOsc.SetEquals(game.Cells));
         }
 
         [Test]
@@ -72,11 +83,15 @@ namespace ModelTests
 
             Life game = new Life(SetupSimpleOscillator());
 
-            game.UpdateCells();
-            Assert.AreEqual(horizontalOsc, game.Cells);
+            Assert.AreEqual(3, game.Cells.Count);
 
             game.UpdateCells();
-            Assert.AreEqual(verticalOsc, game.Cells);
+            Assert.AreEqual(3, game.Cells.Count);
+            Assert.IsTrue(horizontalOsc.SetEquals(game.Cells));
+
+            game.UpdateCells();
+            Assert.AreEqual(3, game.Cells.Count);
+            Assert.IsTrue(verticalOsc.SetEquals(game.Cells));
 
         }
 
