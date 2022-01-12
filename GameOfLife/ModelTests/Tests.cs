@@ -59,27 +59,30 @@ namespace ModelTests
         /// <summary>
         /// Creates a "blinker" pattern which, upon the game updating,
         /// should oscillate between {(0,1),(0,0),(0,-1)} and {(1,0),(0,0),(-1,0)}
-        /// each update.  The period argumnet cycles which of the above sets are returned
+        /// each update.  
+        /// The period argument cycles which of the above sets are returned
         /// (1 for the first set, 2 for the second)
+        /// The x and y arguments translate the pattern by the specified number of units
+        /// in each direction
         /// </summary>
         /// <returns></returns>
-        private HashSet<Cell> SetupBlinker(int period)
+        private HashSet<Cell> SetupBlinker(int period, int x, int y)
         {
             HashSet<Cell> cells = new HashSet<Cell>();
 
             if (period % 2 == 1)
             {
                 // vertical bar
-                cells.Add(new Cell(0, -1));
-                cells.Add(new Cell(0, 0));
-                cells.Add(new Cell(0, 1));
+                cells.Add(new Cell(0 + x, -1 + y));
+                cells.Add(new Cell(0 + x, 0 + y));
+                cells.Add(new Cell(0 + x, 1 + y));
             }
             else
             {
                 // horizontal bar
-                cells.Add(new Cell(-1, 0));
-                cells.Add(new Cell(0, 0));
-                cells.Add(new Cell(1, 0));
+                cells.Add(new Cell(-1 + x, 0 + y));
+                cells.Add(new Cell(0 + x, 0 + y));
+                cells.Add(new Cell(1 + x, 0 + y));
             }
             
 
@@ -87,41 +90,62 @@ namespace ModelTests
         }
 
         /// <summary>
+        /// Creates a blinker pattern of a specified period with no offset from the origin
+        /// </summary>
+        /// <param name="period"></param>
+        /// <returns></returns>
+        private HashSet<Cell> SetupBlinker(int period)
+        {
+            return SetupBlinker(period, 0, 0);
+        }
+
+        /// <summary>
         /// Creates a "toad" pattern oscillator which will oscilate between 
-        /// two six-celled patterns every other generation
+        /// two six-celled patterns every other generation with a specifed offset
+        /// from the origin
         /// </summary>
         /// <returns></returns>
-        private HashSet<Cell> SetupToad(int period)
+        private HashSet<Cell> SetupToad(int period, int x, int y)
         {
             HashSet<Cell> cells = new HashSet<Cell>();
 
             if (period % 2 == 1)
             {
                 // top row
-                cells.Add(new Cell(-1, 1));
-                cells.Add(new Cell(0, 1));
-                cells.Add(new Cell(1, 1));
+                cells.Add(new Cell(-1 + x, 1 + y));
+                cells.Add(new Cell(0 + x, 1 + y));
+                cells.Add(new Cell(1 + x, 1 + y));
 
                 // bottom row
-                cells.Add(new Cell(0, 0));
-                cells.Add(new Cell(-1, 0));
-                cells.Add(new Cell(-2, 0));
+                cells.Add(new Cell(0 + x, 0 + y));
+                cells.Add(new Cell(-1 + x, 0 + y));
+                cells.Add(new Cell(-2 + x, 0 + y));
 
             }
             else
             {
                 // right wing
-                cells.Add(new Cell(0, 2));
-                cells.Add(new Cell(1, 1));
-                cells.Add(new Cell(1, 0));
+                cells.Add(new Cell(0 + x, 2 + y));
+                cells.Add(new Cell(1 + x, 1 + y));
+                cells.Add(new Cell(1 + x, 0 + y));
 
                 // left wing
-                cells.Add(new Cell(-2, 1));
-                cells.Add(new Cell(-2, 0));
-                cells.Add(new Cell(-1, -1));
+                cells.Add(new Cell(-2 + x, 1 + y));
+                cells.Add(new Cell(-2 + x, 0 + y));
+                cells.Add(new Cell(-1 + x, -1 + y));
             }
 
             return cells;
+        }
+
+        /// <summary>
+        /// Creates a toad pattern of a specified period with no offset from the origin
+        /// </summary>
+        /// <param name="period"></param>
+        /// <returns></returns>
+        private HashSet<Cell> SetupToad(int period)
+        {
+            return SetupToad(period, 0, 0);
         }
 
         [Test]
@@ -140,8 +164,8 @@ namespace ModelTests
         {
             Life game = new Life();
 
-            Assert.AreEqual(0, game.Cells.Count);
             Assert.AreEqual(0, game.Generation);
+            Assert.IsFalse(game.IsRunning);
         }
 
         [Test]
@@ -150,6 +174,7 @@ namespace ModelTests
             Life game = new Life(SetupBlinker(1));
 
             Assert.IsTrue(SetupBlinker(1).SetEquals(game.Cells));
+            Assert.IsTrue(game.IsRunning);
         }
 
         [Test]
