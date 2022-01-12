@@ -16,6 +16,8 @@ namespace GameModel
         // the current zero-based iteration of the simulation
         public uint Generation { get; private set; }
 
+        public bool IsRunning { get; private set; } = true;
+
         // temporary constructor; should update to take in a provided set of cells 
         public Life() : this(new HashSet<Cell>())
         {
@@ -40,6 +42,11 @@ namespace GameModel
         /// </summary>
         public void UpdateCells()
         {
+            if (Cells.Count == 0)
+            {
+                IsRunning = false;
+                return;
+            }
 
             HashSet<Cell> nextGeneration = new HashSet<Cell>();
 
