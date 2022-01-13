@@ -19,9 +19,10 @@ try to implement a representation of Life withiut following any comprehensive tu
   - ...
 
 ## In-progress / near future
-  - an option to translate generated patterns in unit tests
+  - ~~an option to translate generated patterns in unit tests~~
   - stress testing 
-  - start working on graphical representation
+  - ~~start working on graphical representation~~
+  - **see project boards**
 
 ## Resources
 
