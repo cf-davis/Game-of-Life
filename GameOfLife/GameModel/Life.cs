@@ -33,6 +33,12 @@ namespace GameModel
             IsRunning = Cells.Count != 0;
         }
 
+        public void SetInitialCells(HashSet<Cell> cells)
+        {
+            Cells = cells;
+            IsRunning = Cells.Count != 0;
+        }
+
         /// <summary>
         /// Evaluates the condition af each living Cell and their adjacent Cells to determine
         /// which Cells remain alive in the next iteration of the simulation.  The rules for

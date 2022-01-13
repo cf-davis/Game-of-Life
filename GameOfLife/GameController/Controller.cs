@@ -19,20 +19,17 @@ namespace GameController
         public delegate void GameUpdateHandler();
         public event GameUpdateHandler GameUpdate;
 
-        private Life game;
+        public Life TheGame { get; private set; }
 
         public Controller()
         {
-
-            
+            TheGame = new Life();
         }
 
-        public Life StartSimulation(HashSet<Cell> initCells)
+        public void StartSimulation(HashSet<Cell> initCells)
         {
-            game = new Life(initCells);
+            TheGame.SetInitialCells(initCells);
             UpdateSimulation();
-
-            return game;
         }
 
         private void UpdateSimulation()
@@ -44,13 +41,13 @@ namespace GameController
              * 
              */
 
-            while (game.IsRunning)
-            {
+            //while (game.IsRunning)
+            //{
                 // add some delay here-- research best way to do that
 
-                game.UpdateCells();
+                //TheGame.UpdateCells();
                 GameUpdate?.Invoke();
-            }
+            //}
 
         }
 

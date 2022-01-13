@@ -24,13 +24,13 @@ namespace Display
         // used to draw the game to the form
         private GraphicsPanel gPanel;
 
-        public DisplayWindow()
+        public DisplayWindow(Controller _controller)
         {
             InitializeComponent();
 
-            controller = new Controller();
+            controller = _controller;
 
-            gPanel = new GraphicsPanel(theGame);
+            gPanel = new GraphicsPanel(controller.TheGame);
             gPanel.Location = new Point(0, 0);
             gPanel.Size = Size;
 
@@ -59,7 +59,11 @@ namespace Display
             //};
 
             // temp hashset-- should contain user input
-            theGame = controller.StartSimulation(new HashSet<Cell>());
+            controller.StartSimulation(new HashSet<Cell>
+            {
+                new Cell(0, 0)
+            }); 
+
             Start_Button.Enabled = false;
             Start_Button.Hide();
 
