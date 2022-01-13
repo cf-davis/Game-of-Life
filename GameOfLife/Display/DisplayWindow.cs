@@ -18,9 +18,6 @@ namespace Display
         // holds the Controller used to communicate user input to the model
         private Controller controller;
 
-        // pseudo-readonly refernce to the model used for graphics updating
-        private Life theGame;
-
         // used to draw the game to the form
         private GraphicsPanel gPanel;
 
@@ -39,7 +36,17 @@ namespace Display
 
             // --- register event handlers from controller here --
 
+            FormClosing += CloseGameWindow;
+
             controller.GameUpdate += Controller_GameUpdate;
+        }
+
+        private void CloseGameWindow(object sender, FormClosingEventArgs e)
+        {
+            Application.Exit();
+
+            // stop any background threads
+            Environment.Exit(0);
         }
 
         private void Controller_GameUpdate()
@@ -50,24 +57,115 @@ namespace Display
 
         private void Start_Button_Click(object sender, EventArgs e)
         {
-            // *temporary input cells (will freeze gui until new thread is made)*
-            //HashSet<Cell> cells = new HashSet<Cell>
-            //{
-            //    new Cell(0, -1),
-            //    new Cell(0, 0),
-            //    new Cell(0, 1)
-            //};
+            HashSet<Cell> cells = SetupStillLife(1);
+
+            cells.UnionWith(SetupBlinker(1, 4, 4));
+            cells.UnionWith(SetupToad(1, -4, -7));
+
+            cells.Add(new Cell(5, -6));
+            cells.Add(new Cell(4, -5));
+            cells.Add(new Cell(5, -4));
 
             // temp hashset-- should contain user input
-            controller.StartSimulation(new HashSet<Cell>
-            {
-                new Cell(0, 0)
-            }); 
+            controller.StartSimulation(cells);
 
             Start_Button.Enabled = false;
             Start_Button.Hide();
 
             gPanel.Show();
         }
+
+        //////////////////////////////////////////////////////////////////////
+        // DELETE BELOW -- used for some lazy testing
+        //////////////////////////////////////////////////////////////////////
+
+        private HashSet<Cell> SetupStillLife(int form)
+        {
+            HashSet<Cell> cells = new HashSet<Cell>();
+
+            switch (form)
+            {
+                case 1:
+                default:
+                    // block pattern
+                    cells.Add(new Cell(0, 0));
+                    cells.Add(new Cell(1, 0));
+                    cells.Add(new Cell(0, 1));
+                    cells.Add(new Cell(1, 1));
+                    break;
+                case 2:
+                    // beehive pattern
+
+                    // top row
+                    cells.Add(new Cell(1, 2));
+                    cells.Add(new Cell(2, 2));
+
+                    // middle row
+                    cells.Add(new Cell(0, 1));
+                    cells.Add(new Cell(3, 1));
+
+                    // bottom row
+                    cells.Add(new Cell(1, 0));
+                    cells.Add(new Cell(2, 0));
+                    break;
+            }
+
+            return cells;
+        }
+        private HashSet<Cell> SetupBlinker(int period, int x, int y)
+        {
+            HashSet<Cell> cells = new HashSet<Cell>();
+
+            if (period % 2 == 1)
+            {
+                // vertical bar
+                cells.Add(new Cell(0 + x, -1 + y));
+                cells.Add(new Cell(0 + x, 0 + y));
+                cells.Add(new Cell(0 + x, 1 + y));
+            }
+            else
+            {
+                // horizontal bar
+                cells.Add(new Cell(-1 + x, 0 + y));
+                cells.Add(new Cell(0 + x, 0 + y));
+                cells.Add(new Cell(1 + x, 0 + y));
+            }
+
+
+            return cells;
+        }
+        private HashSet<Cell> SetupToad(int period, int x, int y)
+        {
+            HashSet<Cell> cells = new HashSet<Cell>();
+
+            if (period % 2 == 1)
+            {
+                // top row
+                cells.Add(new Cell(-1 + x, 1 + y));
+                cells.Add(new Cell(0 + x, 1 + y));
+                cells.Add(new Cell(1 + x, 1 + y));
+
+                // bottom row
+                cells.Add(new Cell(0 + x, 0 + y));
+                cells.Add(new Cell(-1 + x, 0 + y));
+                cells.Add(new Cell(-2 + x, 0 + y));
+
+            }
+            else
+            {
+                // right wing
+                cells.Add(new Cell(0 + x, 2 + y));
+                cells.Add(new Cell(1 + x, 1 + y));
+                cells.Add(new Cell(1 + x, 0 + y));
+
+                // left wing
+                cells.Add(new Cell(-2 + x, 1 + y));
+                cells.Add(new Cell(-2 + x, 0 + y));
+                cells.Add(new Cell(-1 + x, -1 + y));
+            }
+
+            return cells;
+        }
+
     }
 }

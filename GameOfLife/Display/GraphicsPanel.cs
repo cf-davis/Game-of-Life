@@ -18,8 +18,10 @@ namespace Display
 
         private Life theGame;
 
+        private readonly int cellSize = 10;
+
         // potentially useful stuff --
-        // int CellSize
+        
         // Pen CellColor
         // ZoomDistance
         // Point CameraPosition?
@@ -40,27 +42,34 @@ namespace Display
 
             System.Drawing.Drawing2D.Matrix matrix = e.Graphics.Transform.Clone();
 
-            //e.Graphics.TranslateTransform(Size.Width, Size.Height);
+            e.Graphics.TranslateTransform((int)c.X, -(int)c.Y);
+            //e.Graphics.RotateTransform(0);
 
             // probrably shouldn't cast to an int here...
-            Rectangle cell = new Rectangle((int)c.X, (int)c.Y, 10, 10);
+            Rectangle cell = new Rectangle((int)c.X * cellSize, (int)c.Y * cellSize, 
+                cellSize, cellSize);
 
-            e.Graphics.DrawRectangle(new Pen(Color.White), cell);
+            e.Graphics.FillRectangle(new SolidBrush(Color.White), cell);
 
-            //e.Graphics.Transform = matrix;
+            e.Graphics.Transform = matrix;
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
 
+            // center camera view (default to (0,0) "world" space)
+            // change zeros to some camera position variable eventually
+            e.Graphics.TranslateTransform((float)0 + (Size.Width / 2),
+                    (float)0 + (Size.Height / 2));
+
             // draw each cell in it's position on the grid
-
-            foreach (Cell c in theGame.Cells)
+            lock (theGame.cellLock)
             {
-                DrawCell(e, c);
-                e.Graphics.DrawString(c.ToString(), DefaultFont, new SolidBrush(Color.White), 10, 10);
+                foreach (Cell c in theGame.Cells)
+                {
+                    DrawCell(e, c);
+                }
             }
-
         }
 
     }

@@ -13,6 +13,9 @@ namespace GameModel
         // a collection of all "living" cells in the game
         public HashSet<Cell> Cells { get; private set; }
 
+        // mutex lock object for accessing set of Cells
+        public object cellLock { get; } = new object();
+
         // the current zero-based iteration of the simulation
         public uint Generation { get; private set; }
 
@@ -27,7 +30,10 @@ namespace GameModel
 
         public Life(HashSet<Cell> _cells)
         {
-            Cells = _cells;
+            lock (cellLock)
+            {
+                Cells = _cells;
+            }
             Generation = 0;
 
             IsRunning = Cells.Count != 0;
@@ -35,7 +41,10 @@ namespace GameModel
 
         public void SetInitialCells(HashSet<Cell> cells)
         {
-            Cells = cells;
+            lock (cellLock)
+            {
+                Cells = cells;
+            }
             IsRunning = Cells.Count != 0;
         }
 
@@ -59,27 +68,31 @@ namespace GameModel
 
             HashSet<Cell> nextGeneration = new HashSet<Cell>();
 
-            foreach (Cell c in Cells)
+            lock (cellLock)
             {
-                HashSet<Cell> deadCells = GetDeadAdjacents(c);
-
-                // check for 2 or 3 live Cells adjacent to this Cell
-                if (deadCells.Count == 5 || deadCells.Count == 6)
+                foreach (Cell c in Cells)
                 {
-                    nextGeneration.Add(c);
+                    HashSet<Cell> deadCells = GetDeadAdjacents(c);
+
+                    // check for 2 or 3 live Cells adjacent to this Cell
+                    if (deadCells.Count == 5 || deadCells.Count == 6)
+                    {
+                        nextGeneration.Add(c);
+                    }
+
+                    // check if any dead Cells revive
+                    foreach (Cell deadCell in deadCells)
+                    {
+                        if (!nextGeneration.Contains(deadCell))
+                            if (GetDeadAdjacents(deadCell).Count == 5) // revive a dead cell w/ 3 adjacent live cells
+                                nextGeneration.Add(deadCell);
+                    }
+
                 }
 
-                // check if any dead Cells revive
-                foreach (Cell deadCell in deadCells)
-                {
-                    if (!nextGeneration.Contains(deadCell))
-                        if (GetDeadAdjacents(deadCell).Count == 5) // revive a dead cell w/ 3 adjacent live cells
-                            nextGeneration.Add(deadCell);
-                }
-
+                Cells = nextGeneration;
             }
 
-            Cells = nextGeneration;
             Generation++;
         }
 

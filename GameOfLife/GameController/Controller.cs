@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using GameModel;
 
@@ -29,7 +31,8 @@ namespace GameController
         public void StartSimulation(HashSet<Cell> initCells)
         {
             TheGame.SetInitialCells(initCells);
-            UpdateSimulation();
+            Thread update = new Thread(new ThreadStart(UpdateSimulation));
+            update.Start();
         }
 
         private void UpdateSimulation()
@@ -41,13 +44,24 @@ namespace GameController
              * 
              */
 
-            //while (game.IsRunning)
-            //{
-                // add some delay here-- research best way to do that
+            Stopwatch delay = new Stopwatch();
 
-                //TheGame.UpdateCells();
+            int delayTime = 500;
+
+            while (TheGame.IsRunning)
+            {
+                //add some delay here-- research a better way than the busy loop
+                // temporary busy loop just to make sure everything works
+                delay.Start();
+
+                while (delay.ElapsedMilliseconds < delayTime)
+                { }
+
+                delay.Reset();
+
+                TheGame.UpdateCells();
                 GameUpdate?.Invoke();
-            //}
+            }
 
         }
 

@@ -34,7 +34,10 @@ namespace Display
             // 
             // Start_Button
             // 
-            this.Start_Button.Location = new System.Drawing.Point(293, 148);
+            this.Start_Button.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.Start_Button.Location = new System.Drawing.Point(505, 330);
             this.Start_Button.Name = "Start_Button";
             this.Start_Button.Size = new System.Drawing.Size(203, 120);
             this.Start_Button.TabIndex = 0;
@@ -44,12 +47,14 @@ namespace Display
             // 
             // DisplayWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(192F, 192F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.ClientSize = new System.Drawing.Size(1574, 829);
             this.Controls.Add(this.Start_Button);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "DisplayWindow";
-            this.Text = "Form1";
+            this.Text = "Life";
             this.ResumeLayout(false);
 
         }
