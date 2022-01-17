@@ -178,6 +178,38 @@ namespace ModelTests
         }
 
         [Test]
+        public void SingleCellDies()
+        {
+            HashSet<Cell> cells = new HashSet<Cell>
+            {
+                new Cell(0, 0)
+            };
+
+            Life game = new Life(cells);
+
+            game.UpdateCells();
+            Assert.IsFalse(game.IsRunning);
+            Assert.AreEqual(1, game.Generation);
+        }
+
+        [Test]
+        public void EmptySimulationStopsUpdating()
+        {
+            HashSet<Cell> cells = new HashSet<Cell>
+            {
+                new Cell(0, 0)
+            };
+
+            Life game = new Life(cells);
+
+            game.UpdateCells();
+            Assert.AreEqual(1, game.Generation);
+
+            game.UpdateCells();
+            Assert.AreEqual(1, game.Generation);
+        }
+
+        [Test]
         public void UpdateStablePatterns()
         {
             Life game = new Life(SetupStillLife(1)); // test "Block"

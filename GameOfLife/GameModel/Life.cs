@@ -45,6 +45,7 @@ namespace GameModel
             {
                 Cells = cells;
             }
+
             IsRunning = Cells.Count != 0;
         }
 
@@ -60,11 +61,8 @@ namespace GameModel
         /// </summary>
         public void UpdateCells()
         {
-            if (Cells.Count == 0)
-            {
-                IsRunning = false;
+            if (!IsRunning)
                 return;
-            }
 
             HashSet<Cell> nextGeneration = new HashSet<Cell>();
 
@@ -92,6 +90,9 @@ namespace GameModel
 
                 Cells = nextGeneration;
             }
+
+            if (Cells.Count == 0)
+                IsRunning = false;
 
             Generation++;
         }

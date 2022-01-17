@@ -18,7 +18,8 @@ namespace Display
 
         private Life theGame;
 
-        private readonly int cellSize = 10;
+        private int cellSize = 10;
+        private const int CellOffset = 2;
 
         // potentially useful stuff --
         
@@ -46,7 +47,7 @@ namespace Display
             //e.Graphics.RotateTransform(0);
 
             // probrably shouldn't cast to an int here...
-            Rectangle cell = new Rectangle((int)c.X * cellSize, (int)c.Y * cellSize, 
+            Rectangle cell = new Rectangle((int)c.X * cellSize, (int)c.Y * (cellSize + CellOffset), 
                 cellSize, cellSize);
 
             e.Graphics.FillRectangle(new SolidBrush(Color.White), cell);
