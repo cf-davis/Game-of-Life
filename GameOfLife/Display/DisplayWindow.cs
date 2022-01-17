@@ -39,9 +39,11 @@ namespace Display
             // --- register event handlers from controller here --
 
             FormClosing += CloseGameWindow;
+            KeyDown += GameWidow_KeyDown;
 
             controller.GameUpdate += Controller_GameUpdate;
         }
+
 
         private void CloseGameWindow(object sender, FormClosingEventArgs e)
         {
@@ -88,6 +90,22 @@ namespace Display
             Start_Button.Hide();
 
             gPanel.Show();
+        }
+
+        private void GameWidow_KeyDown(object sender, KeyEventArgs e)
+        {
+
+            switch (e.KeyCode)
+            {
+                // temp controls
+                case Keys.Z:
+                    gPanel.ZoomOut();
+                    break;
+                case Keys.X:
+                    gPanel.ZoomIn();
+                    break;
+            }
+
         }
 
         //////////////////////////////////////////////////////////////////////

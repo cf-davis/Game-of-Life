@@ -18,8 +18,8 @@ namespace Display
 
         private Life theGame;
 
-        private static int cellSize = 10;
-        private static int cellBorder = cellSize / 10;
+        private int cellSize = 10;
+        private int cellBorder;
         private const int CellOffset = 1;
 
         // potentially useful stuff --
@@ -36,7 +36,21 @@ namespace Display
             DoubleBuffered = true;
             BackColor = Color.Black;
 
+            cellBorder = cellSize / 10;
         }
+
+        public void ZoomOut()
+        {
+            cellSize -= 2;
+            cellBorder = cellSize / 10;
+        }
+
+        public void ZoomIn()
+        {
+            cellSize += 2;
+            cellBorder = cellSize / 10;
+        }
+
 
         private void DrawCell(PaintEventArgs e, Cell c)
         {
