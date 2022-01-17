@@ -43,12 +43,14 @@ namespace Display
 
             System.Drawing.Drawing2D.Matrix matrix = e.Graphics.Transform.Clone();
 
-            e.Graphics.TranslateTransform((int)c.X, -(int)c.Y);
+            e.Graphics.TranslateTransform((int)c.X, (int)c.Y);
             //e.Graphics.RotateTransform(0);
 
+            int cellX = (int)c.X * (cellSize) - (cellSize / 2);
+            int cellY = -(int)c.Y * (cellSize + CellOffset) - (cellSize / 2);
+
             // probrably shouldn't cast to an int here...
-            Rectangle cell = new Rectangle((int)c.X * cellSize, (int)c.Y * (cellSize + CellOffset), 
-                cellSize, cellSize);
+            Rectangle cell = new Rectangle(cellX, cellY, cellSize, cellSize);
 
             e.Graphics.FillRectangle(new SolidBrush(Color.White), cell);
 
@@ -57,6 +59,12 @@ namespace Display
 
         protected override void OnPaint(PaintEventArgs e)
         {
+
+            e.Graphics.DrawLine(new Pen(new SolidBrush(Color.Purple)), 
+                Size.Width / 2, 0, Size.Width / 2, Size.Height);
+
+            e.Graphics.DrawLine(new Pen(new SolidBrush(Color.Purple)),
+                0, Size.Height / 2, Size.Width, Size.Height / 2);
 
             // center camera view (default to (0,0) "world" space)
             // change zeros to some camera position variable eventually

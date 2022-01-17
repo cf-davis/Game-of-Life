@@ -27,9 +27,11 @@ namespace Display
 
             controller = _controller;
 
-            gPanel = new GraphicsPanel(controller.TheGame);
-            gPanel.Location = new Point(0, 0);
-            gPanel.Size = Size;
+            gPanel = new GraphicsPanel(controller.TheGame)
+            {
+                Location = new Point(0, 0),
+                Size = new Size(ClientRectangle.Width, ClientRectangle.Height)
+            };
 
             Controls.Add(gPanel);
             gPanel.Hide();
@@ -57,6 +59,12 @@ namespace Display
 
         private void Start_Button_Click(object sender, EventArgs e)
         {
+
+            //HashSet<Cell> cells = new HashSet<Cell>
+            //{
+            //    new Cell(0, 0)
+            //};
+
             HashSet<Cell> cells = SetupStillLife(1);
 
             cells.UnionWith(SetupBlinker(1, 4, 4));
