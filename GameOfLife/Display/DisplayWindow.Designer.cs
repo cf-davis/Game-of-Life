@@ -37,9 +37,9 @@ namespace Display
             this.Start_Button.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.Start_Button.Location = new System.Drawing.Point(505, 330);
+            this.Start_Button.Location = new System.Drawing.Point(35, 34);
             this.Start_Button.Name = "Start_Button";
-            this.Start_Button.Size = new System.Drawing.Size(203, 120);
+            this.Start_Button.Size = new System.Drawing.Size(143, 71);
             this.Start_Button.TabIndex = 0;
             this.Start_Button.Text = "start";
             this.Start_Button.UseVisualStyleBackColor = true;

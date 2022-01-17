@@ -34,7 +34,7 @@ namespace Display
             };
 
             Controls.Add(gPanel);
-            gPanel.Hide();
+            //gPanel.Hide();
 
             // --- register event handlers from controller here --
 
@@ -60,19 +60,26 @@ namespace Display
         private void Start_Button_Click(object sender, EventArgs e)
         {
 
+            HashSet<Cell> cells = new HashSet<Cell>();
+
+            // a 24x16 block of cells
+            for (int x = -12; x <= 12; x++)
+                for (int y = -8; y <= 8; y++)
+                    cells.Add(new Cell(x, y));
+
             //HashSet<Cell> cells = new HashSet<Cell>
             //{
             //    new Cell(0, 0)
             //};
 
-            HashSet<Cell> cells = SetupStillLife(1);
+            //HashSet<Cell> cells = SetupStillLife(1);
 
-            cells.UnionWith(SetupBlinker(1, 4, 4));
-            cells.UnionWith(SetupToad(1, -4, -7));
+            //cells.UnionWith(SetupBlinker(1, 4, 4));
+            //cells.UnionWith(SetupToad(1, -4, -7));
 
-            cells.Add(new Cell(5, -6));
-            cells.Add(new Cell(4, -5));
-            cells.Add(new Cell(5, -4));
+            //cells.Add(new Cell(5, -6));
+            //cells.Add(new Cell(4, -5));
+            //cells.Add(new Cell(5, -4));
 
             // temp hashset-- should contain user input
             controller.StartSimulation(cells);

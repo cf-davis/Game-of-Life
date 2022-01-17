@@ -18,8 +18,9 @@ namespace Display
 
         private Life theGame;
 
-        private int cellSize = 10;
-        private const int CellOffset = 2;
+        private static int cellSize = 10;
+        private static int cellBorder = cellSize / 10;
+        private const int CellOffset = 1;
 
         // potentially useful stuff --
         
@@ -39,18 +40,14 @@ namespace Display
 
         private void DrawCell(PaintEventArgs e, Cell c)
         {
-            // translate grid position to image position (ie (0,0) should be center screen)
-
             System.Drawing.Drawing2D.Matrix matrix = e.Graphics.Transform.Clone();
 
-            e.Graphics.TranslateTransform((int)c.X, (int)c.Y);
-            //e.Graphics.RotateTransform(0);
+            e.Graphics.TranslateTransform(c.X, c.Y);
 
-            int cellX = (int)c.X * (cellSize) - (cellSize / 2);
+            int cellX = (int)c.X * (cellSize - CellOffset) - (cellSize / 2);
             int cellY = -(int)c.Y * (cellSize + CellOffset) - (cellSize / 2);
 
-            // probrably shouldn't cast to an int here...
-            Rectangle cell = new Rectangle(cellX, cellY, cellSize, cellSize);
+            Rectangle cell = new Rectangle(cellX, cellY, cellSize - cellBorder, cellSize - cellBorder);
 
             e.Graphics.FillRectangle(new SolidBrush(Color.White), cell);
 
@@ -59,12 +56,9 @@ namespace Display
 
         protected override void OnPaint(PaintEventArgs e)
         {
+            //DrawDebugGrid(e);
 
-            e.Graphics.DrawLine(new Pen(new SolidBrush(Color.Purple)), 
-                Size.Width / 2, 0, Size.Width / 2, Size.Height);
-
-            e.Graphics.DrawLine(new Pen(new SolidBrush(Color.Purple)),
-                0, Size.Height / 2, Size.Width, Size.Height / 2);
+            //DrawDebugCenterlines(e);
 
             // center camera view (default to (0,0) "world" space)
             // change zeros to some camera position variable eventually
@@ -79,6 +73,34 @@ namespace Display
                     DrawCell(e, c);
                 }
             }
+        }
+
+        private void DrawDebugCenterlines(PaintEventArgs e)
+        {
+            // vertical line
+            e.Graphics.DrawLine(new Pen(new SolidBrush(Color.Yellow)),
+                Size.Width / 2, 0, Size.Width / 2, Size.Height);
+
+            // horizontal line
+            e.Graphics.DrawLine(new Pen(new SolidBrush(Color.Yellow)),
+                0, Size.Height / 2, Size.Width, Size.Height / 2);
+        }
+
+        private void DrawDebugGrid(PaintEventArgs e)
+        {
+
+            for (int x = cellSize; x <= Width; x += cellSize)
+            {
+                int xPos = x - (cellSize / 2);
+                e.Graphics.DrawLine(new Pen(new SolidBrush(Color.Purple)), xPos, 0, xPos, Height);
+            }
+
+            for (int y = cellSize; y <= Height; y += cellSize)
+            {
+                int yPos = y - (cellSize / 2);
+                e.Graphics.DrawLine(new Pen(new SolidBrush(Color.Purple)), 0, yPos, Width, yPos);
+            }
+
         }
 
     }
