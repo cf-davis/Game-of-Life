@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using GameController;
 using GameModel;
+using static Display.GraphicsPanel;
 
 namespace Display
 {
@@ -103,6 +104,18 @@ namespace Display
                     break;
                 case Keys.X:
                     gPanel.ZoomIn();
+                    break;
+                case Keys.W:
+                    gPanel.Pan(Direction.Up);
+                    break;
+                case Keys.A:
+                    gPanel.Pan(Direction.Left);
+                    break;
+                case Keys.S:
+                    gPanel.Pan(Direction.Down);
+                    break;
+                case Keys.D:
+                    gPanel.Pan(Direction.Right);
                     break;
             }
 

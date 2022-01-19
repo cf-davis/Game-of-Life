@@ -59,7 +59,7 @@ namespace GameController
 
                 delay.Reset();
 
-                TheGame.UpdateCells();
+                //TheGame.UpdateCells();
                 GameUpdate?.Invoke();
             }
 

@@ -23,7 +23,16 @@ namespace Display
         private const int CellOffset = 1;
 
         // potentially useful stuff --
-        
+
+        private Point camera;
+        private const int PanSpeed = 10;
+        private const int ZoomSpeed = 2;
+
+        public enum Direction
+        { 
+            Up, Down, Left, Right
+        };
+
         // Pen CellColor
         // ZoomDistance
         // Point CameraPosition?
@@ -32,6 +41,7 @@ namespace Display
         public GraphicsPanel(Life _theGame)
         {
             theGame = _theGame;
+            camera = new Point(0, 0);
 
             DoubleBuffered = true;
             BackColor = Color.Black;
@@ -41,16 +51,41 @@ namespace Display
 
         public void ZoomOut()
         {
-            cellSize -= 2;
+            if (cellSize <= 2)
+                return;
+
+            cellSize -= ZoomSpeed;
             cellBorder = cellSize / 10;
         }
 
         public void ZoomIn()
         {
-            cellSize += 2;
+            if (cellSize >= 50)
+                return;
+
+            cellSize += ZoomSpeed;
             cellBorder = cellSize / 10;
         }
 
+        public void Pan(Direction d)
+        { 
+            switch (d)
+            {
+                case Direction.Up:
+                    camera.Y += PanSpeed;
+                    break;
+                case Direction.Down:
+                    camera.Y -= PanSpeed;
+                    break;
+                case Direction.Right:
+                    camera.X -= PanSpeed;
+                    break;
+                case Direction.Left:
+                    camera.X += PanSpeed;
+                    break;
+            }
+
+        }
 
         private void DrawCell(PaintEventArgs e, Cell c)
         {
@@ -76,8 +111,8 @@ namespace Display
 
             // center camera view (default to (0,0) "world" space)
             // change zeros to some camera position variable eventually
-            e.Graphics.TranslateTransform((float)0 + (Size.Width / 2),
-                    (float)0 + (Size.Height / 2));
+            e.Graphics.TranslateTransform((float)camera.X + (Size.Width / 2),
+                    (float)camera.Y + (Size.Height / 2));
 
             // draw each cell in it's position on the grid
             lock (theGame.cellLock)
