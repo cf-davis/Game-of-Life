@@ -107,7 +107,7 @@ namespace Display
         {
             //DrawDebugGrid(e);
 
-            //DrawDebugCenterlines(e);
+            DrawDebugCenterlines(e);
 
             // center camera view (default to (0,0) "world" space)
             // change zeros to some camera position variable eventually

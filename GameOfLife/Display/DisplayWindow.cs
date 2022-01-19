@@ -31,10 +31,13 @@ namespace Display
             gPanel = new GraphicsPanel(controller.TheGame)
             {
                 Location = new Point(0, 0),
-                Size = new Size(ClientRectangle.Width, ClientRectangle.Height)
+                Size = new Size(ClientRectangle.Width, ClientRectangle.Height),
+                Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | 
+                    AnchorStyles.Right)
             };
 
             Controls.Add(gPanel);
+            gPanel.Focus();
             //gPanel.Hide();
 
             // --- register event handlers from controller here --
@@ -42,9 +45,23 @@ namespace Display
             FormClosing += CloseGameWindow;
             KeyDown += GameWidow_KeyDown;
 
+            gPanel.MouseClick += GraphicsPanel_OnMouseClick;
+
             controller.GameUpdate += Controller_GameUpdate;
         }
 
+        private void GraphicsPanel_OnMouseClick(object sender, MouseEventArgs e)
+        {
+
+            switch (e.Button)
+            {
+                case MouseButtons.Left:
+                    controller.TryInputCell(e.X, e.Y, gPanel.Size);
+                    break;
+                case MouseButtons.Right:
+                    break;
+            }
+        }
 
         private void CloseGameWindow(object sender, FormClosingEventArgs e)
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -26,6 +27,24 @@ namespace GameController
         public Controller()
         {
             TheGame = new Life();
+        }
+
+        public void TryInputCell(int x, int y, Size window)
+        {
+
+            x -= window.Width / 2;
+            y = window.Height / 2 - y;
+
+
+            Cell c = new Cell(x, y);
+
+            lock (TheGame.cellLock)
+            {
+                if (!TheGame.Cells.Contains(c))
+                    TheGame.Cells.Add(c);
+            }
+
+            GameUpdate?.Invoke();
         }
 
         public void StartSimulation(HashSet<Cell> initCells)
