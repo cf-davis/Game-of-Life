@@ -46,7 +46,8 @@ namespace GameController
 
             Stopwatch delay = new Stopwatch();
 
-            int delayTime = 500;
+            int frameDelay = 17; // ms between frames
+            int updateDelay = 500; // ms between cell updates
 
             while (TheGame.IsRunning)
             {
@@ -54,12 +55,15 @@ namespace GameController
                 // temporary busy loop just to make sure everything works
                 delay.Start();
 
-                while (delay.ElapsedMilliseconds < delayTime)
-                { }
+                while (delay.ElapsedMilliseconds < updateDelay)
+                {
+                    if (delay.ElapsedMilliseconds % frameDelay == 0)
+                        GameUpdate?.Invoke();
+                }
 
                 delay.Reset();
 
-                //TheGame.UpdateCells();
+                TheGame.UpdateCells();
                 GameUpdate?.Invoke();
             }
 
