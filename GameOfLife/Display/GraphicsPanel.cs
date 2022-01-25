@@ -18,7 +18,7 @@ namespace Display
 
         private Life theGame;
 
-        private int cellSize = 10;
+        public int CellSize { get; private set; } = 10;
         private int cellBorder;
         private const int CellOffset = 1;
 
@@ -46,25 +46,25 @@ namespace Display
             DoubleBuffered = true;
             BackColor = Color.Black;
 
-            cellBorder = cellSize / 10;
+            cellBorder = CellSize / 10;
         }
 
         public void ZoomOut()
         {
-            if (cellSize <= 2)
+            if (CellSize <= 2)
                 return;
 
-            cellSize -= ZoomSpeed;
-            cellBorder = cellSize / 10;
+            CellSize -= ZoomSpeed;
+            cellBorder = CellSize / 10;
         }
 
         public void ZoomIn()
         {
-            if (cellSize >= 50)
+            if (CellSize >= 50)
                 return;
 
-            cellSize += ZoomSpeed;
-            cellBorder = cellSize / 10;
+            CellSize += ZoomSpeed;
+            cellBorder = CellSize / 10;
         }
 
         public void Pan(Direction d)
@@ -93,10 +93,10 @@ namespace Display
 
             e.Graphics.TranslateTransform(c.X, c.Y);
 
-            int cellX = (int)c.X * (cellSize - CellOffset) - (cellSize / 2);
-            int cellY = -(int)c.Y * (cellSize + CellOffset) - (cellSize / 2);
+            int cellX = (int)c.X * (CellSize - CellOffset) - (CellSize / 2);
+            int cellY = -(int)c.Y * (CellSize + CellOffset) - (CellSize / 2);
 
-            Rectangle cell = new Rectangle(cellX, cellY, cellSize - cellBorder, cellSize - cellBorder);
+            Rectangle cell = new Rectangle(cellX, cellY, CellSize - cellBorder, CellSize - cellBorder);
 
             e.Graphics.FillRectangle(new SolidBrush(Color.White), cell);
 
@@ -107,7 +107,7 @@ namespace Display
         {
             //DrawDebugGrid(e);
 
-            DrawDebugCenterlines(e);
+            //DrawDebugCenterlines(e);
 
             // center camera view (default to (0,0) "world" space)
             // change zeros to some camera position variable eventually
@@ -138,15 +138,15 @@ namespace Display
         private void DrawDebugGrid(PaintEventArgs e)
         {
 
-            for (int x = cellSize; x <= Width; x += cellSize)
+            for (int x = CellSize; x <= Width; x += CellSize)
             {
-                int xPos = x - (cellSize / 2);
+                int xPos = x - (CellSize / 2);
                 e.Graphics.DrawLine(new Pen(new SolidBrush(Color.Purple)), xPos, 0, xPos, Height);
             }
 
-            for (int y = cellSize; y <= Height; y += cellSize)
+            for (int y = CellSize; y <= Height; y += CellSize)
             {
-                int yPos = y - (cellSize / 2);
+                int yPos = y - (CellSize / 2);
                 e.Graphics.DrawLine(new Pen(new SolidBrush(Color.Purple)), 0, yPos, Width, yPos);
             }
 

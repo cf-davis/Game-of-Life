@@ -22,6 +22,8 @@ namespace Display
         // used to draw the game to the form
         private GraphicsPanel gPanel;
 
+        private bool mousePressed = false;
+
         public DisplayWindow(Controller _controller)
         {
             InitializeComponent();
@@ -45,22 +47,32 @@ namespace Display
             FormClosing += CloseGameWindow;
             KeyDown += GameWidow_KeyDown;
 
-            gPanel.MouseClick += GraphicsPanel_OnMouseClick;
+            gPanel.MouseDown += GraphicsPanel_OnMouseDown;
+            gPanel.MouseUp += GPanel_MouseUp;
+            gPanel.MouseMove += GPanel_MouseMove;
 
             controller.GameUpdate += Controller_GameUpdate;
         }
 
-        private void GraphicsPanel_OnMouseClick(object sender, MouseEventArgs e)
+        private void GPanel_MouseMove(object sender, MouseEventArgs e)
         {
-
-            switch (e.Button)
+            if (!controller.TheGame.IsRunning && mousePressed)
             {
-                case MouseButtons.Left:
-                    controller.TryInputCell(e.X, e.Y, gPanel.Size);
-                    break;
-                case MouseButtons.Right:
-                    break;
+                bool addCell = e.Button == MouseButtons.Left;
+                controller.UpdateInitialCells(e.X, e.Y, gPanel.CellSize, gPanel.Size, addCell);
             }
+
+        }
+
+        private void GraphicsPanel_OnMouseDown(object sender, MouseEventArgs e)
+        {
+            mousePressed = true;
+            GPanel_MouseMove(sender, e); // capture single clicks as well as mouse holds
+        }
+
+        private void GPanel_MouseUp(object sender, MouseEventArgs e)
+        {
+            mousePressed = false;
         }
 
         private void CloseGameWindow(object sender, FormClosingEventArgs e)
@@ -79,30 +91,7 @@ namespace Display
 
         private void Start_Button_Click(object sender, EventArgs e)
         {
-
-            HashSet<Cell> cells = new HashSet<Cell>();
-
-            // a 24x16 block of cells
-            for (int x = -12; x <= 12; x++)
-                for (int y = -8; y <= 8; y++)
-                    cells.Add(new Cell(x, y));
-
-            //HashSet<Cell> cells = new HashSet<Cell>
-            //{
-            //    new Cell(0, 0)
-            //};
-
-            //HashSet<Cell> cells = SetupStillLife(1);
-
-            //cells.UnionWith(SetupBlinker(1, 4, 4));
-            //cells.UnionWith(SetupToad(1, -4, -7));
-
-            //cells.Add(new Cell(5, -6));
-            //cells.Add(new Cell(4, -5));
-            //cells.Add(new Cell(5, -4));
-
-            // temp hashset-- should contain user input
-            controller.StartSimulation(cells);
+            controller.StartSimulation();
 
             Start_Button.Enabled = false;
             Start_Button.Hide();
@@ -136,98 +125,6 @@ namespace Display
                     break;
             }
 
-        }
-
-        //////////////////////////////////////////////////////////////////////
-        // DELETE BELOW -- used for some lazy testing
-        //////////////////////////////////////////////////////////////////////
-
-        private HashSet<Cell> SetupStillLife(int form)
-        {
-            HashSet<Cell> cells = new HashSet<Cell>();
-
-            switch (form)
-            {
-                case 1:
-                default:
-                    // block pattern
-                    cells.Add(new Cell(0, 0));
-                    cells.Add(new Cell(1, 0));
-                    cells.Add(new Cell(0, 1));
-                    cells.Add(new Cell(1, 1));
-                    break;
-                case 2:
-                    // beehive pattern
-
-                    // top row
-                    cells.Add(new Cell(1, 2));
-                    cells.Add(new Cell(2, 2));
-
-                    // middle row
-                    cells.Add(new Cell(0, 1));
-                    cells.Add(new Cell(3, 1));
-
-                    // bottom row
-                    cells.Add(new Cell(1, 0));
-                    cells.Add(new Cell(2, 0));
-                    break;
-            }
-
-            return cells;
-        }
-        private HashSet<Cell> SetupBlinker(int period, int x, int y)
-        {
-            HashSet<Cell> cells = new HashSet<Cell>();
-
-            if (period % 2 == 1)
-            {
-                // vertical bar
-                cells.Add(new Cell(0 + x, -1 + y));
-                cells.Add(new Cell(0 + x, 0 + y));
-                cells.Add(new Cell(0 + x, 1 + y));
-            }
-            else
-            {
-                // horizontal bar
-                cells.Add(new Cell(-1 + x, 0 + y));
-                cells.Add(new Cell(0 + x, 0 + y));
-                cells.Add(new Cell(1 + x, 0 + y));
-            }
-
-
-            return cells;
-        }
-        private HashSet<Cell> SetupToad(int period, int x, int y)
-        {
-            HashSet<Cell> cells = new HashSet<Cell>();
-
-            if (period % 2 == 1)
-            {
-                // top row
-                cells.Add(new Cell(-1 + x, 1 + y));
-                cells.Add(new Cell(0 + x, 1 + y));
-                cells.Add(new Cell(1 + x, 1 + y));
-
-                // bottom row
-                cells.Add(new Cell(0 + x, 0 + y));
-                cells.Add(new Cell(-1 + x, 0 + y));
-                cells.Add(new Cell(-2 + x, 0 + y));
-
-            }
-            else
-            {
-                // right wing
-                cells.Add(new Cell(0 + x, 2 + y));
-                cells.Add(new Cell(1 + x, 1 + y));
-                cells.Add(new Cell(1 + x, 0 + y));
-
-                // left wing
-                cells.Add(new Cell(-2 + x, 1 + y));
-                cells.Add(new Cell(-2 + x, 0 + y));
-                cells.Add(new Cell(-1 + x, -1 + y));
-            }
-
-            return cells;
         }
 
     }

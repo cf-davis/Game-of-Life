@@ -29,27 +29,40 @@ namespace GameController
             TheGame = new Life();
         }
 
-        public void TryInputCell(int x, int y, Size window)
+        public void UpdateInitialCells(int x, int y, int cellSize, Size window, bool addCell)
         {
 
-            x -= window.Width / 2;
-            y = window.Height / 2 - y;
+            // convert mouse coords to cartesian
+            x -= (window.Width/ 2);
+            y = (window.Height / 2 - y);
 
+            // scale position by size of cells
+            x /= cellSize;
+            y /= cellSize;
 
             Cell c = new Cell(x, y);
 
+            // try to add/delete a cell based on addCell flag
             lock (TheGame.cellLock)
             {
-                if (!TheGame.Cells.Contains(c))
-                    TheGame.Cells.Add(c);
+                if (addCell)
+                {
+                    if (!TheGame.Cells.Contains(c))
+                        TheGame.Cells.Add(c);
+                }
+                else
+                {
+                    if (TheGame.Cells.Contains(c))
+                        TheGame.Cells.Remove(c);
+                }
             }
 
             GameUpdate?.Invoke();
         }
 
-        public void StartSimulation(HashSet<Cell> initCells)
+        public void StartSimulation()
         {
-            TheGame.SetInitialCells(initCells);
+            TheGame.SetInitialCells(TheGame.Cells); 
             Thread update = new Thread(new ThreadStart(UpdateSimulation));
             update.Start();
         }
@@ -66,7 +79,7 @@ namespace GameController
             Stopwatch delay = new Stopwatch();
 
             int frameDelay = 17; // ms between frames
-            int updateDelay = 500; // ms between cell updates
+            int updateDelay = 200; // ms between cell updates
 
             while (TheGame.IsRunning)
             {
