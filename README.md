@@ -17,11 +17,11 @@ Each generation, these conditions are applied to every cell in the game and then
 
 ## Controls
 
-  {W A S D}      --   Pan Up / Left / Down / Right Respectively
-  {Z}            --   Zoom Out
-  {X}            --   Zoom In
-  {Left Mouse}   --   Draw Cells (before staring game)
-  {Right Mouse}  --   Erase Cells (before starting game)
+  - {W A S D}      --   Pan Up / Left / Down / Right Respectively
+  - {Z}            --   Zoom Out
+  - {X}            --   Zoom In
+  - {Left Mouse}   --   Draw Cells (before staring game)
+  - {Right Mouse}  --   Erase Cells (before starting game)
 
   I plan on adding zoom/pan functionality to mouse scroll wheel and mouse click + drag eventually
 
